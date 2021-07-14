@@ -1,6 +1,6 @@
 const {
   envConstants: { PORT },
-  mailActionsConstants: { EMAIL_CONFIRM, REGISTER, UPDATE, DELETE },
+  mailActionsConstants: { EMAIL_CONFIRM, UPDATE, DELETE },
   responseCodes
 } = require('../constants');
 const { UserModel } = require('../database');
@@ -22,7 +22,6 @@ module.exports = {
       });
 
       await sendMail(email, EMAIL_CONFIRM, { name, verifyLink: `http://localhost:${PORT}/verify/${createdUser._id}` });
-      // await sendMail(email, REGISTER, { name });
 
       res.status(responseCodes.CREATED).json(createdUser);
     } catch (e) {

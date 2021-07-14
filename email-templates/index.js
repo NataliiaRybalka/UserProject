@@ -1,7 +1,6 @@
 const {
   mailActionsConstants: {
     EMAIL_CONFIRM,
-    REGISTER,
     UPDATE,
     DELETE
   }
@@ -11,10 +10,6 @@ module.exports = {
   [EMAIL_CONFIRM]: {
     templateName: 'emailConfirmation',
     subject: 'Confirm your email'
-  },
-  [REGISTER]: {
-    templateName: 'register',
-    subject: 'You are registered'
   },
   [UPDATE]: {
     templateName: 'update',
