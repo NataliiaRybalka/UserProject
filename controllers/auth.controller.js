@@ -4,8 +4,8 @@ const {
 } = require('../constants');
 const { OAuthModel } = require('../database');
 const { ErrorHandler, errorMessages } = require('../errors');
-const { passwordHasher } = require('../services');
-const authService = require('../services/auth.service');
+const { userHelper } = require('../helpers');
+const { authService, passwordHasher } = require('../services');
 
 module.exports = {
   login: async (req, res, next) => {
@@ -33,6 +33,8 @@ module.exports = {
 
       const tokenPair = authService.generateTokenPair();
 
+      const userNormalized = await userHelper.userNormalizator(req.user.toJSON());
+
       await OAuthModel.create({
         ...tokenPair,
         user: _id
@@ -40,7 +42,7 @@ module.exports = {
 
       res.status(responseCodes.CREATED).json({
         ...tokenPair,
-        user: req.user
+        user: userNormalized
       });
     } catch (e) {
       next(e);

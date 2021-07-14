@@ -4,6 +4,7 @@ const {
   responseCodes
 } = require('../constants');
 const { UserModel } = require('../database');
+const { userHelper } = require('../helpers');
 const {
   mailService: { sendMail },
   passwordHasher
@@ -22,8 +23,9 @@ module.exports = {
       });
 
       await sendMail(email, EMAIL_CONFIRM, { name, verifyLink: `http://localhost:${PORT}/verify/${createdUser._id}` });
+      const userNormalized = await userHelper.userNormalizator(createdUser.toJSON());
 
-      res.status(responseCodes.CREATED).json(createdUser);
+      res.status(responseCodes.CREATED).json(userNormalized);
     } catch (e) {
       next(e);
     }
@@ -32,18 +34,26 @@ module.exports = {
   getAllUsers: async (req, res, next) => {
     try {
       const users = await UserModel.find({}).where({ isDelete: false });
+      const userNormalized = [];
 
-      res.json(users);
+      await users.map((user) => {
+        const newUser = userHelper.userNormalizator(user.toJSON());
+        userNormalized.push(newUser);
+        return userNormalized;
+      });
+
+      res.json(userNormalized);
     } catch (e) {
       next(e);
     }
   },
 
-  getUserById: (req, res, next) => {
+  getUserById: async (req, res, next) => {
     try {
       const { user } = req;
+      const userNormalized = await userHelper.userNormalizator(user.toJSON());
 
-      res.json(user);
+      res.json(userNormalized);
     } catch (e) {
       next(e);
     }
@@ -56,13 +66,15 @@ module.exports = {
 
       await UserModel.updateOne({ _id: user._id }, { name: updateData.name });
       await sendMail(user.email, UPDATE, {
-        name: updateData.name,
+        name: user.name,
         param: {
           name: updateData.name
         }
       });
 
-      res.status(responseCodes.CREATED).json(user);
+      const userNormalized = await userHelper.userNormalizator(user.toJSON());
+
+      res.status(responseCodes.CREATED).json(userNormalized);
     } catch (e) {
       next(e);
     }
