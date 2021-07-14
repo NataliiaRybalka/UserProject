@@ -41,7 +41,7 @@ module.exports = {
     }
   },
 
-  checkAvatar: (req, res, next) => {
+  checkImage: (req, res, next) => {
     try {
       if (req.images.length > 1) {
         throw new ErrorHandler(
@@ -51,7 +51,26 @@ module.exports = {
         );
       }
 
-      [req.avatar] = req.images;
+      [req.image] = req.images;
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  checkImageIsPresent: (req, res, next) => {
+    try {
+      const { avatar } = req.body;
+      const { user } = req;
+
+      if (!user.images.includes(avatar)) {
+        throw new ErrorHandler(
+          responseCodes.NOT_FOUND,
+          errorMessages.IMAGE_NOT_FOUND.message,
+          errorMessages.IMAGE_NOT_FOUND.code
+        );
+      }
 
       next();
     } catch (e) {

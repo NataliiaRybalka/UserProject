@@ -6,7 +6,7 @@ const { authMiddlewar, fileMiddlewar, userMiddlewar } = require('../middlewars')
 router.post(
   '/',
   fileMiddlewar.checkFiles,
-  fileMiddlewar.checkAvatar,
+  fileMiddlewar.checkImage,
   userMiddlewar.checkIsUserValidity,
   userMiddlewar.checkEmailBusy,
   userController.createUser
@@ -22,7 +22,7 @@ router.put(
   '/:userId',
   authMiddlewar.checkAccessToken,
   fileMiddlewar.checkFiles,
-  fileMiddlewar.checkAvatar,
+  fileMiddlewar.checkImage,
   userMiddlewar.checkUpdateDatas('updateUser'),
   userController.updateUserById
 );
@@ -44,6 +44,13 @@ router.put(
   userMiddlewar.checkUpdateDatas('changePassword'),
   userMiddlewar.getUserByDynamicParam('userId', 'params', '_id'),
   userController.changePassword
+);
+
+router.put(
+  '/:userId/avatar',
+  userMiddlewar.getUserByDynamicParam('userId', 'params', '_id'),
+  fileMiddlewar.checkImageIsPresent,
+  userController.changeAvatar
 );
 
 module.exports = router;

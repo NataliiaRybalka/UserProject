@@ -20,8 +20,8 @@ module.exports = {
   createUser: async (req, res, next) => {
     try {
       const {
-        avatar,
-        body: { email, name, password }
+        body: { email, name, password },
+        image
       } = req;
 
       const hashedPassword = await passwordHasher.hash(password);
@@ -35,10 +35,10 @@ module.exports = {
 
       const { _id } = createdUser;
 
-      if (avatar) {
-        const { finalPath, filePath } = await fileHelper._photoDirBuilder('users', _id, avatar.name, 'images');
-        await avatar.mv(finalPath);
-        await UserModel.updateOne({ _id }, { $push: { avatar: filePath } });
+      if (image) {
+        const { finalPath, filePath } = await fileHelper._photoDirBuilder('users', _id, image.name, 'images');
+        await image.mv(finalPath);
+        await UserModel.updateOne({ _id }, { $push: { images: filePath } });
       }
 
       await sendMail(email, EMAIL_CONFIRM, { name, verifyLink: `http://localhost:${PORT}/verify/${createdUser._id}` });
@@ -81,14 +81,14 @@ module.exports = {
   updateUserById: async (req, res, next) => {
     try {
       const updateData = req.body;
-      const { avatar, user } = req;
+      const { image, user } = req;
 
       const { _id } = user;
 
-      if (avatar) {
-        const { finalPath, filePath } = await fileHelper._photoDirBuilder('users', _id, avatar.name, 'images');
-        await avatar.mv(finalPath);
-        await UserModel.updateOne({ _id }, { $push: { avatar: filePath } });
+      if (image) {
+        const { finalPath, filePath } = await fileHelper._photoDirBuilder('users', _id, image.name, 'images');
+        await image.mv(finalPath);
+        await UserModel.updateOne({ _id }, { $push: { images: filePath } });
       }
 
       await UserModel.updateOne({ _id: user._id }, { name: updateData.name || user.name });
@@ -152,6 +152,21 @@ module.exports = {
       const hashedPassword = await passwordHasher.hash(password);
 
       await UserModel.updateOne({ _id: user._id }, { password: hashedPassword });
+
+      const userNormalized = await userHelper.userNormalizator(user.toJSON());
+
+      res.status(responseCodes.CREATED).json(userNormalized);
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  changeAvatar: async (req, res, next) => {
+    try {
+      const { avatar } = req.body;
+      const { user } = req;
+
+      await UserModel.updateOne({ _id: user._id }, { avatar });
 
       const userNormalized = await userHelper.userNormalizator(user.toJSON());
 

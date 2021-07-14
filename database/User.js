@@ -23,8 +23,11 @@ const userSchema = new Schema({
   passwordToken: {
     type: String
   },
-  avatar: {
+  images: {
     type: Array
+  },
+  avatar: {
+    type: String
   }
 });
 
