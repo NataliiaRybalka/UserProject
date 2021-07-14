@@ -9,7 +9,7 @@ const {
   responseCodes
 } = require('../constants');
 const { UserModel } = require('../database');
-const { userHelper } = require('../helpers');
+const { fileHelper, userHelper } = require('../helpers');
 const {
   userService,
   mailService: { sendMail },
@@ -19,14 +19,27 @@ const {
 module.exports = {
   createUser: async (req, res, next) => {
     try {
-      const { email, name, password } = req.body;
+      const {
+        avatar,
+        body: { email, name, password }
+      } = req;
+
       const hashedPassword = await passwordHasher.hash(password);
+
       const createdUser = await UserModel.create({
         ...req.body,
         password: hashedPassword,
         isDelete: false,
         isActive: false
       });
+
+      const { _id } = createdUser;
+
+      if (avatar) {
+        const { finalPath, filePath } = await fileHelper._photoDirBuilder('users', _id, avatar.name, 'images');
+        await avatar.mv(finalPath);
+        await UserModel.updateOne({ _id }, { avatar: filePath });
+      }
 
       await sendMail(email, EMAIL_CONFIRM, { name, verifyLink: `http://localhost:${PORT}/verify/${createdUser._id}` });
       const userNormalized = await userHelper.userNormalizator(createdUser.toJSON());
@@ -68,7 +81,7 @@ module.exports = {
   updateUserById: async (req, res, next) => {
     try {
       const updateData = req.body;
-      const { user } = req;
+      const { avatar, user } = req;
 
       await UserModel.updateOne({ _id: user._id }, { name: updateData.name });
       await sendMail(user.email, UPDATE, {
