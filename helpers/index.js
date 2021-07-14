@@ -1,3 +1,1 @@
-module.exports = {
-  passwordHasher: require('./password.hesher')
-};
+module.exports = {};
