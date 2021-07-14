@@ -1,5 +1,6 @@
 const {
   mailActionsConstants: {
+    CHANGE_PASSWORD,
     EMAIL_CONFIRM,
     UPDATE,
     DELETE
@@ -18,5 +19,9 @@ module.exports = {
   [DELETE]: {
     templateName: 'delete',
     subject: 'Deteled user'
+  },
+  [CHANGE_PASSWORD]: {
+    templateName: 'changePassword',
+    subject: 'Change password'
   }
 };

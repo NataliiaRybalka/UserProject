@@ -21,8 +21,7 @@ const userSchema = new Schema({
     type: Boolean
   },
   passwordToken: {
-    type: String,
-    required: true
+    type: String
   }
 });
 

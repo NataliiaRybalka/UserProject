@@ -74,9 +74,11 @@ module.exports = {
         user: _id
       });
 
+      const userNormalized = await userHelper.userNormalizator(req.user.toJSON());
+
       res.status(responseCodes.CREATED).json({
         ...tokenPair,
-        user: req.user
+        user: userNormalized
       });
     } catch (e) {
       next(e);

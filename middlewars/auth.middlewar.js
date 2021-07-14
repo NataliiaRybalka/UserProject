@@ -22,7 +22,7 @@ module.exports = {
       await authService.verifyToken(token);
 
       const objectByToken = await OAuthModel.findOne({ accessToken: token });
-console.log(objectByToken);
+
       if (!objectByToken) {
         throw new ErrorHandler(
           responseCodes.AUTHENTICATION_ERROR,

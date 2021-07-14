@@ -1,6 +1,11 @@
 const {
   envConstants: { PORT },
-  mailActionsConstants: { EMAIL_CONFIRM, UPDATE, DELETE },
+  mailActionsConstants: {
+    CHANGE_PASSWORD,
+    EMAIL_CONFIRM,
+    UPDATE,
+    DELETE
+  },
   responseCodes
 } = require('../constants');
 const { UserModel } = require('../database');
@@ -98,16 +103,19 @@ module.exports = {
     try {
       const { user } = req;
 
-      const tokenPair = authService.generatePasswordToken();
+      const token = authService.generatePasswordToken();
+
+      await sendMail(user.email, CHANGE_PASSWORD, { name: user.name, passwordToken: token.passwordToken });
+
       const userNormalized = await userHelper.userNormalizator(user.toJSON());
 
-      await UserModel.create({
-        ...tokenPair,
+      await UserModel.updateOne({
+        passwordToken: token.passwordToken,
         user: user._id
       });
 
       res.status(responseCodes.CREATED).json({
-        ...tokenPair,
+        passwordToken: token.passwordToken,
         user: userNormalized
       });
     } catch (e) {
