@@ -1,6 +1,10 @@
-const { responseCodes } = require('../constants');
+const {
+  nameConstants: { AUTHORIZATION },
+  responseCodes
+} = require('../constants');
 const { UserModel } = require('../database');
 const { ErrorHandler, errorMessages } = require('../errors');
+const { userService } = require('../services');
 const { userValidator } = require('../validators');
 
 module.exports = {
@@ -75,6 +79,38 @@ module.exports = {
           errorMessages.FIELD_NOT_FILLED.code
         );
       }
+
+      next();
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  checkPasswordToken: async (req, res, next) => {
+    try {
+      const token = req.get(AUTHORIZATION);
+
+      if (!token) {
+        throw new ErrorHandler(
+          responseCodes.AUTHENTICATION_ERROR,
+          errorMessages.NO_TOKEN.message,
+          errorMessages.NO_TOKEN.code
+        );
+      }
+
+      await userService.verifyPasswordToken(token);
+
+      const objectByToken = await UserModel.findOne({ passwordToken: token });
+
+      if (!objectByToken) {
+        throw new ErrorHandler(
+          responseCodes.AUTHENTICATION_ERROR,
+          errorMessages.WRONG_TOKEN.message,
+          errorMessages.WRONG_TOKEN.code
+        );
+      }
+
+      req.user = objectByToken.user;
 
       next();
     } catch (e) {

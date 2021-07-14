@@ -4,13 +4,11 @@ const { promisify } = require('util');
 const {
   envConstants: {
     ACCESS_TOKEN_SECRET,
-    PASSWORD_TOKEN_SERCET,
     REFRESH_TOKEN_SECRET
   },
   nameConstants: {
     ACCESS,
     ACCESS_TOKEN_TIME,
-    PASSWORD_TOKEN_TIME,
     REFRESH_TOKEN_TIME
   }
 } = require('../constants');
@@ -29,15 +27,5 @@ module.exports = {
     const secredWord = tokenType === ACCESS ? ACCESS_TOKEN_SECRET : REFRESH_TOKEN_SECRET;
 
     await verifyPromise(token, secredWord);
-  },
-
-  generatePasswordToken: () => {
-    const passwordToken = jwt.sign({}, PASSWORD_TOKEN_SERCET, { expiresIn: PASSWORD_TOKEN_TIME });
-
-    return { passwordToken };
-  },
-
-  verifyPasswordToken: async (token) => {
-    await verifyPromise(token, PASSWORD_TOKEN_SERCET);
   }
 };

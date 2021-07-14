@@ -34,4 +34,11 @@ router.get(
   userController.getPasswordToken
 );
 
+router.put(
+  '/:userId/password',
+  userMiddlewar.checkPasswordToken,
+  userMiddlewar.checkUpdateDatas('changePassword'),
+  userController.changePassword
+);
+
 module.exports = router;

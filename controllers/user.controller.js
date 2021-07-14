@@ -11,7 +11,7 @@ const {
 const { UserModel } = require('../database');
 const { userHelper } = require('../helpers');
 const {
-  authService,
+  userService,
   mailService: { sendMail },
   passwordHasher
 } = require('../services');
@@ -103,7 +103,7 @@ module.exports = {
     try {
       const { user } = req;
 
-      const token = authService.generatePasswordToken();
+      const token = userService.generatePasswordToken();
 
       await sendMail(user.email, CHANGE_PASSWORD, { name: user.name, passwordToken: token.passwordToken });
 
@@ -118,6 +118,23 @@ module.exports = {
         passwordToken: token.passwordToken,
         user: userNormalized
       });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  changePassword: async (req, res, next) => {
+    try {
+      const { password } = req.body;
+      const { user } = req;
+
+      const hashedPassword = await passwordHasher.hash(password);
+
+      await UserModel.updateOne({ _id: user._id }, { password: hashedPassword });
+
+      const userNormalized = await userHelper.userNormalizator(user.toJSON());
+
+      res.status(responseCodes.CREATED).json(userNormalized);
     } catch (e) {
       next(e);
     }
