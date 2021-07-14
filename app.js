@@ -14,7 +14,7 @@ _mongooseConnector();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/', userRouter);
+app.use('/users', userRouter);
 
 app.listen(PORT, () => {
   console.log(`App listen ${PORT}`);
