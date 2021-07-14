@@ -24,5 +24,27 @@ module.exports = {
     } catch (e) {
       next(e);
     }
+  },
+
+  getUserById: (req, res, next) => {
+    try {
+      const { user } = req;
+
+      res.json(user);
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  updateUserById: async (req, res, next) => {
+    try {
+      const user = req.body;
+
+      await UserModel.updateOne(user);
+
+      res.status(responseCodes.CREATED).json(user);
+    } catch (e) {
+      next(e);
+    }
   }
 };

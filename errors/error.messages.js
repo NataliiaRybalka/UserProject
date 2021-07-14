@@ -10,5 +10,9 @@ module.exports = {
   WRONG_EMAIL_OR_PASS: {
     message: 'Wrong email or password.',
     code: '401.3'
+  },
+  ROUT_NOT_FOUND: {
+    message: 'Rout not found.',
+    code: '404.1'
   }
 };
