@@ -38,6 +38,7 @@ router.put(
   '/:userId/password',
   userMiddlewar.checkPasswordToken,
   userMiddlewar.checkUpdateDatas('changePassword'),
+  userMiddlewar.getUserByDynamicParam('userId', 'params', '_id'),
   userController.changePassword
 );
 
