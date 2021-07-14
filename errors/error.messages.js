@@ -14,5 +14,9 @@ module.exports = {
   ROUT_NOT_FOUND: {
     message: 'Rout not found.',
     code: '404.1'
-  }
+  },
+  RECORD_NOT_FOUND: {
+    message: 'Record not found.',
+    code: '404.2'
+  },
 };

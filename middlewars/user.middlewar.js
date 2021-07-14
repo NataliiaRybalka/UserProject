@@ -46,7 +46,15 @@ module.exports = {
     try {
       const valueOfParam = req[serchIn][paramName];
 
-      const user = await UserModel.findOne({ [dbKey]: valueOfParam }).select('+password');
+      const user = await UserModel.findOne({ [dbKey]: valueOfParam }).where({ isDelete: false }).select('+password');
+
+      if (!user) {
+        throw new ErrorHandler(
+          responseCodes.NOT_FOUND,
+          errorMessages.RECORD_NOT_FOUND.message,
+          errorMessages.RECORD_NOT_FOUND.code
+        );
+      }
 
       req.user = user;
 

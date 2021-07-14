@@ -15,6 +15,6 @@ router.use('/:userId', userMiddlewar.getUserByDynamicParam('userId', 'params', '
 
 router.get('/:userId', userController.getUserById);
 router.put('/:userId', userMiddlewar.checkUpdateDatas, userController.updateUserById);
-// router.delete('/:userId', userController.deleteUserById);
+router.delete('/:userId', userController.deleteUserById);
 
 module.exports = router;
