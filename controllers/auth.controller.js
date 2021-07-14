@@ -18,6 +18,14 @@ module.exports = {
         );
       }
 
+      if (!req.user.isActive) {
+        throw new ErrorHandler(
+          responseCodes.AUTHENTICATION_ERROR,
+          errorMessages.WRONG_EMAIL_OR_PASS.message,
+          errorMessages.WRONG_EMAIL_OR_PASS.code
+        );
+      }
+
       const { password: hashedPassword, _id } = req.user;
       const { password } = req.body;
 
