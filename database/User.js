@@ -19,6 +19,10 @@ const userSchema = new Schema({
   },
   isActive: {
     type: Boolean
+  },
+  passwordToken: {
+    type: String,
+    required: true
   }
 });
 

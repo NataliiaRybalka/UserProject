@@ -64,9 +64,9 @@ module.exports = {
     }
   },
 
-  checkUpdateDatas: (req, res, next) => {
+  checkUpdateDatas: (updateData) => (req, res, next) => {
     try {
-      const { error } = userValidator.updateUser.validate(req.body);
+      const { error } = userValidator[updateData].validate(req.body);
 
       if (error) {
         throw new ErrorHandler(

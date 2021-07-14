@@ -19,7 +19,7 @@ router.get('/:userId', userController.getUserById);
 router.put(
   '/:userId',
   authMiddlewar.checkAccessToken,
-  userMiddlewar.checkUpdateDatas,
+  userMiddlewar.checkUpdateDatas('updateUser'),
   userController.updateUserById
 );
 
@@ -27,6 +27,12 @@ router.delete(
   '/:userId',
   authMiddlewar.checkAccessToken,
   userController.deleteUserById
+);
+
+router.get(
+  '/:userId/password',
+  userMiddlewar.checkUpdateDatas('changePassword'),
+  userController.getPasswordToken
 );
 
 module.exports = router;

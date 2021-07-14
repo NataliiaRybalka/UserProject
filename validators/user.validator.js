@@ -11,5 +11,9 @@ module.exports = {
 
   updateUser: Joi.object().keys({
     name: Joi.string().min(1).max(25)
+  }),
+
+  changePassword: Joi.object().keys({
+    password: Joi.string().regex(PASSWORD_REGEXP)
   })
 };

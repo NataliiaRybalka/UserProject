@@ -6,6 +6,7 @@ const {
 const { UserModel } = require('../database');
 const { userHelper } = require('../helpers');
 const {
+  authService,
   mailService: { sendMail },
   passwordHasher
 } = require('../services');
@@ -88,6 +89,27 @@ module.exports = {
       await sendMail(email, DELETE, { name });
 
       res.status(responseCodes.NO_CONTENT).json(_id);
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  getPasswordToken: async (req, res, next) => {
+    try {
+      const { user } = req;
+
+      const tokenPair = authService.generatePasswordToken();
+      const userNormalized = await userHelper.userNormalizator(user.toJSON());
+
+      await UserModel.create({
+        ...tokenPair,
+        user: user._id
+      });
+
+      res.status(responseCodes.CREATED).json({
+        ...tokenPair,
+        user: userNormalized
+      });
     } catch (e) {
       next(e);
     }
