@@ -1,6 +1,17 @@
-const { mailActionsConstants: { REGISTER, UPDATE, DELETE } } = require('../constants');
+const {
+  mailActionsConstants: {
+    EMAIL_CONFIRM,
+    REGISTER,
+    UPDATE,
+    DELETE
+  }
+} = require('../constants');
 
 module.exports = {
+  [EMAIL_CONFIRM]: {
+    templateName: 'emailConfirmation',
+    subject: 'Confirm your email'
+  },
   [REGISTER]: {
     templateName: 'register',
     subject: 'You are registered'

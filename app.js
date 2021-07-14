@@ -7,7 +7,7 @@ const {
   responseCodes
 } = require('./constants');
 const { errorMessages } = require('./errors');
-const { authRouter, userRouter } = require('./routes');
+const { authRouter, userRouter, verifyRouter } = require('./routes');
 
 const app = express();
 
@@ -18,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
+app.use('/verify', verifyRouter);
 app.use('*', _notFoundHandler);
 app.use(_handleErrors);
 

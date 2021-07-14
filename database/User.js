@@ -16,6 +16,9 @@ const userSchema = new Schema({
   },
   isDelete: {
     type: Boolean
+  },
+  isActive: {
+    type: Boolean
   }
 });
 

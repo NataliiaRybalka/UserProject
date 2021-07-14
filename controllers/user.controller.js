@@ -1,5 +1,6 @@
 const {
-  mailActionsConstants: { REGISTER, UPDATE, DELETE },
+  envConstants: { PORT },
+  mailActionsConstants: { EMAIL_CONFIRM, REGISTER, UPDATE, DELETE },
   responseCodes
 } = require('../constants');
 const { UserModel } = require('../database');
@@ -12,11 +13,16 @@ module.exports = {
   createUser: async (req, res, next) => {
     try {
       const { email, name, password } = req.body;
-
       const hashedPassword = await passwordHasher.hash(password);
-      const createdUser = await UserModel.create({ ...req.body, password: hashedPassword, isDelete: false });
+      const createdUser = await UserModel.create({
+        ...req.body,
+        password: hashedPassword,
+        isDelete: false,
+        isActive: false
+      });
 
-      await sendMail(email, REGISTER, { name });
+      await sendMail(email, EMAIL_CONFIRM, { name, verifyLink: `http://localhost:${PORT}/verify/${createdUser._id}` });
+      // await sendMail(email, REGISTER, { name });
 
       res.status(responseCodes.CREATED).json(createdUser);
     } catch (e) {
@@ -49,9 +55,9 @@ module.exports = {
       const updateData = req.body;
       const { user } = req;
 
-      await UserModel.updateOne(updateData);
+      await UserModel.updateOne({ _id: user._id }, { name: updateData.name });
       await sendMail(user.email, UPDATE, {
-        name: user.name,
+        name: updateData.name,
         param: {
           name: updateData.name
         }
@@ -67,7 +73,7 @@ module.exports = {
     try {
       const { _id, email, name } = req.user;
 
-      await UserModel.findOneAndUpdate(_id, { isDelete: true });
+      await UserModel.findOneAndUpdate({ _id }, { isDelete: true });
       await sendMail(email, DELETE, { name });
 
       res.status(responseCodes.NO_CONTENT).json(_id);
