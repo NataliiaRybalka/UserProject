@@ -21,6 +21,8 @@ router.get('/:userId', userController.getUserById);
 router.put(
   '/:userId',
   authMiddlewar.checkAccessToken,
+  fileMiddlewar.checkFiles,
+  fileMiddlewar.checkAvatar,
   userMiddlewar.checkUpdateDatas('updateUser'),
   userController.updateUserById
 );
