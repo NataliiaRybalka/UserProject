@@ -31,7 +31,6 @@ router.delete(
 
 router.get(
   '/:userId/password',
-  userMiddlewar.checkUpdateDatas('changePassword'),
   userController.getPasswordToken
 );
 
