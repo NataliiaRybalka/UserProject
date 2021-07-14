@@ -7,9 +7,17 @@ module.exports = {
     message: (error) => error,
     code: '401.2'
   },
+  MAX_SIZE_FOR_MEDIA: {
+    message: (fileName, maxSize) => `${fileName} size is larger than ${maxSize}`,
+    code: '415.1'
+  },
   NO_TOKEN: {
     message: 'No token.',
     code: '401.3'
+  },
+  ONLY_ONE_FILE: {
+    message: 'Only one file',
+    code: '415.2'
   },
   RECORD_NOT_FOUND: {
     message: 'Record not found.',
@@ -22,6 +30,10 @@ module.exports = {
   WRONG_EMAIL_OR_PASS: {
     message: 'Wrong email or password.',
     code: '401.4'
+  },
+  WRONG_MIMETYPE: {
+    message: 'Mimetype is not supported',
+    code: '415.3'
   },
   WRONG_TEMPLATE: {
     message: 'Wrong template.',

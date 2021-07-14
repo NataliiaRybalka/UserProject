@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const {
   envConstants: { MONGOOSE_URL, PORT },
@@ -15,6 +17,10 @@ _mongooseConnector();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(express.static(path.join(process.cwd(), 'static')));
+
+app.use(fileUpload());
 
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
