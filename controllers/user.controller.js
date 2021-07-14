@@ -38,7 +38,7 @@ module.exports = {
       if (avatar) {
         const { finalPath, filePath } = await fileHelper._photoDirBuilder('users', _id, avatar.name, 'images');
         await avatar.mv(finalPath);
-        await UserModel.updateOne({ _id }, { avatar: filePath });
+        await UserModel.updateOne({ _id }, { $push: { avatar: filePath } });
       }
 
       await sendMail(email, EMAIL_CONFIRM, { name, verifyLink: `http://localhost:${PORT}/verify/${createdUser._id}` });
@@ -88,15 +88,10 @@ module.exports = {
       if (avatar) {
         const { finalPath, filePath } = await fileHelper._photoDirBuilder('users', _id, avatar.name, 'images');
         await avatar.mv(finalPath);
-        await UserModel.updateOne({ _id }, { avatar: filePath });
+        await UserModel.updateOne({ _id }, { $push: { avatar: filePath } });
       }
 
-      await UserModel.updateOne({
-        _id: user._id
-      }, {
-        name: updateData.name || user.name,
-        // avatar: 'a'
-      });
+      await UserModel.updateOne({ _id: user._id }, { name: updateData.name || user.name });
       await sendMail(user.email, UPDATE, {
         name: user.name,
         param: {
