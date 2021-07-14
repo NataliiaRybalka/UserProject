@@ -23,6 +23,10 @@ module.exports = {
     message: 'Wrong email or password.',
     code: '401.4'
   },
+  WRONG_TEMPLATE: {
+    message: 'Wrong template.',
+    code: '404.3'
+  },
   WRONG_TOKEN: {
     message: 'Wrong token.',
     code: '401.5'

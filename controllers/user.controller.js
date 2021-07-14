@@ -1,14 +1,22 @@
-const responseCodes = require('../constants/response.codes');
+const {
+  mailActionsConstants: { REGISTER, UPDATE, DELETE },
+  responseCodes
+} = require('../constants');
 const { UserModel } = require('../database');
-const { passwordHasher } = require('../helpers');
+const {
+  mailService: { sendMail },
+  passwordHasher
+} = require('../services');
 
 module.exports = {
   createUser: async (req, res, next) => {
     try {
-      const { password } = req.body;
+      const { email, name, password } = req.body;
 
       const hashedPassword = await passwordHasher.hash(password);
       const createdUser = await UserModel.create({ ...req.body, password: hashedPassword, isDelete: false });
+
+      await sendMail(email, REGISTER, { name });
 
       res.status(responseCodes.CREATED).json(createdUser);
     } catch (e) {
@@ -38,9 +46,16 @@ module.exports = {
 
   updateUserById: async (req, res, next) => {
     try {
-      const user = req.body;
+      const updateData = req.body;
+      const { user } = req;
 
-      await UserModel.updateOne(user);
+      await UserModel.updateOne(updateData);
+      await sendMail(user.email, UPDATE, {
+        name: user.name,
+        param: {
+          name: updateData.name
+        }
+      });
 
       res.status(responseCodes.CREATED).json(user);
     } catch (e) {
@@ -50,9 +65,10 @@ module.exports = {
 
   deleteUserById: async (req, res, next) => {
     try {
-      const { _id } = req.user;
+      const { _id, email, name } = req.user;
 
       await UserModel.findOneAndUpdate(_id, { isDelete: true });
+      await sendMail(email, DELETE, { name });
 
       res.status(responseCodes.NO_CONTENT).json(_id);
     } catch (e) {
