@@ -98,8 +98,6 @@ module.exports = {
         );
       }
 
-      await userService.verifyPasswordToken(token);
-
       const objectByToken = await UserModel.findOne({ passwordToken: token });
 
       if (!objectByToken) {
@@ -109,6 +107,8 @@ module.exports = {
           errorMessages.WRONG_TOKEN.code
         );
       }
+
+      await userService.verifyPasswordToken(token);
 
       req.user = objectByToken.user;
 
